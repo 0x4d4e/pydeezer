@@ -3,7 +3,7 @@ import hashlib
 from os import path
 
 from deezer import Deezer as DeezerPy
-from deezer.gw import APIError as GWAPIError
+from deezer.gw import GWAPIError
 from deezer.api import APIError as APIError
 
 import requests
