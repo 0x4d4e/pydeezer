@@ -2,10 +2,10 @@ from os import path
 
 import click
 from click import echo, types
-from PyInquirer import prompt
+import questionary
 
 from . import Deezer, util
-from .exceptions import LoginError
+#from .exceptions import LoginError
 from .constants.track_formats import FORMAT_LIST
 
 
@@ -26,27 +26,17 @@ def download(arl, media_type, download_dir, quality):
     user = None
 
     if arl:
-        try:
-            user = deezer.login_via_arl(arl)
-        except LoginError:
-            user = None
-            echo("The Arl you supplied is invalid. Please try again...")
+        user = deezer.login_via_arl(arl)
+        if not user:
+            echo("The Arl you supplied is invalid.")
+            return
 
     if not user:
-        def validate_arl(arl):
-            try:
-                deezer.login_via_arl(arl)
-            except LoginError:
-                return "Arl is invalid. Please try again..."
-            return True
-
-        user = prompt({
-            "type": "input",
-            "name": "user",
-            "message": "Please input your ARL.",
-            "validate": validate_arl,
-            "filter": lambda _: deezer.user
-        })["user"]
+        arl = questionary.text("Please input your ARL.", validate=lambda x: True if len(x) > 0 else "Please input your ARL").ask()
+        user = deezer.login_via_arl(arl)
+        if not user:
+            echo("The Arl you supplied is invalid.")
+            return
 
     def search_choices(answers):
         query = answers["query"]
@@ -116,7 +106,7 @@ def download(arl, media_type, download_dir, quality):
                 "name": track["title"] + " - " + track["artist"]["name"],
                 "value": track["id"],
                 "short": track["title_short"]
-            } for track in deezer.search_tracks(query)]
+            } for track in deezer.search_tracks(query)["data"]]
 
     questions = [
         {
@@ -175,7 +165,7 @@ def download(arl, media_type, download_dir, quality):
         }
     ]
 
-    answers = prompt(questions)
+    answers = questionary.prompt(questions)
 
     tracks = answers["tracks"]
     quality = quality if quality else answers["quality"]

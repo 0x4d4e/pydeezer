@@ -2,7 +2,7 @@ requests
 cryptography
 mutagen
 click
-pyinquirer
+questionary
 colorama
 rich
 autopep8

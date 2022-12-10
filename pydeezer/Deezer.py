@@ -20,8 +20,8 @@ from .ProgressHandler import BaseProgressHandler, DefaultProgressHandler
 
 from .constants import track_formats
 
-from .exceptions import LoginError
-from .exceptions import APIRequestError
+#from .exceptions import LoginError
+#from .exceptions import APIRequestError
 from .exceptions import DownloadLinkDecryptionError
 
 from . import util
