@@ -179,7 +179,7 @@ class Deezer(DeezerPy):
             "_albumart": cover,
         }
 
-        if len(album_data["genres"]["data"]) > 0:
+        if "data" in album_data["genres"] and len(album_data["genres"]["data"]) > 0:
             tags["genre"] = album_data["genres"]["data"][0]["name"]
 
         _authors = list(filter(
